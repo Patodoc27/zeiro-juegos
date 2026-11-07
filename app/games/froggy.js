@@ -24,14 +24,15 @@
     play: function (body, content, options, ctx) {
       var c = content || {};
       var questions = (c.questions || []).slice();
-      var lives = c.lives || 5;
-      var tPQ = c.timePerQuestion || 20;
+      var lives = c.lives == null ? 5 : c.lives;
+      var infinite = lives <= 0;
+      var tPQ = c.timePerQuestion == null ? 20 : c.timePerQuestion;
       var count = c.count || 0;
       var order = c.order || 'random';
       if (order === 'random') questions = ZU.shuffle(questions);
       if (count > 0 && questions.length > count) questions = questions.slice(0, count);
 
-      var state = { idx: 0, lives: lives, aciertos: 0, answers: [], lock: false, timeLeft: tPQ, timer: null, frogPos: 12 };
+      var state = { idx: 0, lives: infinite ? 99 : lives, infinite: infinite, aciertos: 0, answers: [], lock: false, timeLeft: tPQ, timer: null, frogPos: 12, cur: null };
 
       body.innerHTML =
         '<div class="frog2">' +
@@ -64,6 +65,7 @@
       };
 
       function pintarVidas() {
+        if (state.infinite) { els.vidas.innerHTML = '<span class="fj-vida on">' + ZI('heart') + '</span><span class="fj-vida on">' + ZI('heart') + '</span><span class="fj-vida on">' + ZI('heart') + '</span>'; return; }
         var h = '';
         for (var i = 0; i < lives; i++) h += '<span class="fj-vida' + (i < state.lives ? ' on' : '') + '">' + ZI('heart') + '</span>';
         els.vidas.innerHTML = h;
@@ -74,6 +76,8 @@
 
       function iniciarTimer() {
         clearInterval(state.timer);
+        if (tPQ <= 0) { els.timer.style.display = 'none'; return; }
+        els.timer.style.display = '';
         state.timeLeft = tPQ;
         pintarTimer();
         state.timer = setInterval(function () {
@@ -87,6 +91,7 @@
         }, 250);
       }
       function pintarTimer() {
+        if (tPQ <= 0) return;
         var pct = Math.max(0, Math.min(1, state.timeLeft / tPQ));
         var deg = Math.round(pct * 360);
         els.ring.style.background = 'conic-gradient(#16A34A ' + deg + 'deg, #E5E7EB ' + deg + 'deg)';
@@ -98,9 +103,13 @@
         state.lock = false;
         var q = questions[state.idx];
         if (!q) { terminar(); return; }
+        var ordenOps = ZU.shuffle([0, 1, 2]);
+        var opts = ordenOps.map(function (k) { return (q.options || [])[k]; });
+        var correcta = ordenOps.indexOf(q.correct);
+        state.cur = { opts: opts, correcta: correcta, orig: ordenOps };
         els.qbox.innerHTML = '<div class="fj-q">' + ZU.esc(q.q) + '</div>';
         els.ops.innerHTML = '';
-        (q.options || []).forEach(function (op, i) {
+        opts.forEach(function (op, i) {
           var b = document.createElement('button');
           b.className = 'fj-pad';
           b.innerHTML = '<span class="fj-pad-letra">' + 'ABC'[i] + '</span><span class="fj-pad-texto">' + ZU.esc(op) + '</span>';
@@ -126,16 +135,17 @@
         state.lock = true;
         clearInterval(state.timer);
         var q = questions[state.idx];
-        var ok = !timeout && i === q.correct;
+        var cur = state.cur || { correcta: q.correct, original: q.correct };
+        var ok = !timeout && i === cur.correcta;
         var pads = els.ops.querySelectorAll('.fj-pad');
         if (timeout) {
-          if (q.correct != null && pads[q.correct]) pads[q.correct].classList.add('bien');
+          if (cur.correcta != null && pads[cur.correcta]) pads[cur.correcta].classList.add('bien');
         } else {
           if (ok) { if (pads[i]) pads[i].classList.add('bien'); }
-          else if (q.correct != null && pads[q.correct]) pads[q.correct].classList.add('bien');
+          else if (cur.correcta != null && pads[cur.correcta]) pads[cur.correcta].classList.add('bien');
           if (pads[i] && !ok) pads[i].classList.add('mal');
         }
-        state.answers.push({ q: q.q, ok: ok, elegida: timeout ? null : i });
+        state.answers.push({ q: q.q, ok: ok, elegida: timeout || !cur.orig ? null : cur.orig[i] });
         if (ok) {
           state.aciertos++;
           pintarPuntos();
@@ -143,8 +153,10 @@
           els.frog.classList.remove('cae');
           saltarRana();
         } else {
-          state.lives--;
-          pintarVidas();
+          if (!state.infinite) {
+            state.lives--;
+            pintarVidas();
+          }
           els.frog.classList.add('cae');
           setTimeout(function () { els.frog.classList.remove('cae'); }, 600);
           els.feedback.innerHTML = '<span class="mal">' + (timeout ? 'Se acabó el tiempo.' : 'Incorrecto.') + '</span>' +
@@ -152,7 +164,7 @@
         }
         setTimeout(function () {
           state.idx++;
-          if (state.lives <= 0 || state.idx >= questions.length) terminar();
+          if ((!state.infinite && state.lives <= 0) || state.idx >= questions.length) terminar();
           else mostrarPregunta();
         }, ok ? 1100 : 1700);
       }

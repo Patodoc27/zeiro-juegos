@@ -91,10 +91,11 @@
       name: 'Froggy Jumps', desc: 'Saltar el río respondiendo con vidas y tiempo',
       html: function (c) {
         return '<div class="ed-cfg"><div class="mini-grid">' +
-          '<div><label class="campo">Vidas</label><input class="input" type="number" min="1" max="9" data-k="lives" value="' + esc(c.lives || 5) + '"></div>' +
-          '<div><label class="campo">Segundos por pregunta</label><input class="input" type="number" min="5" max="120" data-k="timePerQuestion" value="' + esc(c.timePerQuestion || 20) + '"></div>' +
+          '<div><label class="campo">Vidas (0 = infinitas)</label><input class="input" type="number" min="0" max="9" data-k="lives" value="' + esc(c.lives != null ? c.lives : 5) + '"></div>' +
+          '<div><label class="campo">Segundos por pregunta (0 = sin tiempo)</label><input class="input" type="number" min="0" max="120" data-k="timePerQuestion" value="' + esc(c.timePerQuestion != null ? c.timePerQuestion : 20) + '"></div>' +
           '<div><label class="campo">Preguntas por partida (0 = todas)</label><input class="input" type="number" min="0" max="50" data-k="count" value="' + esc(c.count || 0) + '"></div>' +
-          '</div><div class="ayuda">Cada pregunta tiene 3 opciones; «Correcta» es el número (1, 2 o 3).</div>' +
+          '<label class="campo"><input type="checkbox" data-k="orderRandom"' + (c.order !== 'sequential' ? ' checked' : '') + '> Preguntas en orden aleatorio</label>' +
+          '</div><div class="ayuda">Cada pregunta tiene 3 opciones; «Correcta» es el número (1, 2 o 3). Las opciones se muestran siempre en desorden.</div>' +
           '<div class="ed-filas" data-filas="questions">' + filas((c.questions || []).map(function (q) {
             return { q: q.q, op1: (q.options || [])[0] || '', op2: (q.options || [])[1] || '', op3: (q.options || [])[2] || '', correct: q.correct != null ? q.correct + 1 : '', explanation: q.explanation || '' };
           }), [
@@ -110,11 +111,13 @@
           if (isNaN(correct) || correct < 0 || correct > 2) return null;
           return { q: f.q, options: [f.op1, f.op2, f.op3], correct: correct, explanation: f.explanation || '' };
         }).filter(function (q) { return q && q.q && q.options.every(function (o) { return o; }); });
+        var lives = parseInt(root.querySelector('[data-k="lives"]').value, 10);
+        var tPQ = parseInt(root.querySelector('[data-k="timePerQuestion"]').value, 10);
         return {
-          lives: parseInt(root.querySelector('[data-k="lives"]').value, 10) || 5,
-          timePerQuestion: parseInt(root.querySelector('[data-k="timePerQuestion"]').value, 10) || 20,
+          lives: isNaN(lives) ? 5 : lives,
+          timePerQuestion: isNaN(tPQ) ? 20 : tPQ,
           count: parseInt(root.querySelector('[data-k="count"]').value, 10) || 0,
-          order: 'random',
+          order: root.querySelector('[data-k="orderRandom"]').checked ? 'random' : 'sequential',
           questions: questions
         };
       }
