@@ -8,20 +8,35 @@
   var ACC = { test: '#7C3AED', froggy: '#22C55E', sopa: '#0EA5E9', crucigrama: '#F59E0B', columnas: '#EC4899', memory: '#8B5CF6', completar: '#14B8A6', 'ordenar-palabras': '#F97316', 'si-o-no': '#EF4444', 'ordenar-letras': '#6366F1', ruleta: '#EAB308', grupos: '#10B981', filas: '#0EA5E9', mapa: '#84CC16' };
 
   /* ---------------- LANDING ---------------- */
+  var DEMO_ID = { test: 'g-test', froggy: 'g-froggy', sopa: 'g-sopa', crucigrama: 'g-cruci', columnas: 'g-colum', memory: 'g-mem', completar: 'g-comp', 'ordenar-palabras': 'g-ordp', 'si-o-no': 'g-sino', 'ordenar-letras': 'g-ordl', ruleta: 'g-ruleta', grupos: 'g-grupo', filas: 'g-filas', mapa: 'g-mapa' };
   function landing(root) {
     ZDB.games.list().then(function (games) {
       var destacados = games.slice(0, 6);
       root.innerHTML =
-        '<div class="hero">' +
-        '<span class="blob b1"></span><span class="blob b2"></span>' +
-        '<span class="eyebrow" style="color:#5EEAD4">Plataforma de juegos para el aula</span>' +
-        '<h1>Jugá, creá y <em>compartí</em> actividades educativas.</h1>' +
-        '<p>Tests, sopas de letras, crucigramas, memoria y 10 juegos más. Los estudiantes entran con un código, sin registrarse, y vos ves los resultados en vivo.</p>' +
+        '<section class="hero">' +
+        '<div class="hero-txt">' +
+        '<span class="eyebrow">Plataforma de juegos para el aula</span>' +
+        '<h1>Creá juegos educativos en un instante.</h1>' +
+        '<p class="hero-sub">¿Qué querés enseñar hoy? Tests, sopas de letras, crucigramas, memoria y 10 juegos más. Los estudiantes entran con un código, sin registrarse, y vos ves los resultados en vivo.</p>' +
         '<div class="acciones">' +
-        '<a class="btn blanco" href="#/docente">' + ZI('edit') + 'Soy docente</a>' +
-        '<a class="btn fantasma" href="#/entrar">' + ZI('play') + 'Soy estudiante</a>' +
-        '</div><div class="marca-hero">Zeiro Juegos</div></div>' +
-        '<div class="seccion-tit"><h2>Actividades destacadas</h2><span class="badge">' + games.length + ' juegos</span></div>' +
+        '<a class="btn primary lg" href="#/docente/nuevo">' + ZI('plus') + 'Crear una actividad</a>' +
+        '<a class="btn lg" href="#/entrar">' + ZI('play') + 'Entrar como estudiante</a>' +
+        '</div>' +
+        '<div class="hero-chips"><span>' + ZED.list.length + ' tipos de juego</span><span>Sin registro</span><span>Informes en vivo</span><span>Embeber en el aula</span></div>' +
+        '</div>' +
+        '<div class="hero-visual"><img src="assets/hero-illustration.png" alt="Estudiantes aprendiendo con juegos" loading="eager"></div>' +
+        '</section>' +
+        '<div class="seccion-tit" id="catalogo"><span class="eyebrow">Catálogo</span><h2>Tipos de juegos</h2></div>' +
+        '<p class="muted mb">Elegí un tipo para jugar una demo o para crear tu propia actividad.</p>' +
+        '<div class="grid cols-4">' + ZED.list.map(function (tl) {
+          return '<div class="card tipo-card"><div class="tipo-ico" style="background:' + ACC[tl[0]] + '1A;color:' + ACC[tl[0]] + '">' + ZGICON(tl[0]) + '</div>' +
+            '<h3>' + ZU.esc(tl[1]) + '</h3><p class="muted" style="font-size:.85rem;margin-bottom:10px">' + ZU.esc(tl[2]) + '</p>' +
+            '<div class="tipo-acc">' +
+            '<a class="btn small" href="#/juego/' + DEMO_ID[tl[0]] + '">' + ZI('play') + 'Demo</a>' +
+            '<a class="btn small ghost" href="#/docente/juego/nuevo?tipo=' + tl[0] + '">' + ZI('edit') + 'Crear</a>' +
+            '</div></div>';
+        }).join('') + '</div>' +
+        '<div class="seccion-tit"><span class="eyebrow">Para probar ya</span><h2>Actividades de ejemplo</h2><span class="badge">' + games.length + ' juegos</span></div>' +
         '<div class="grid cols-3">' + destacados.map(function (gm) {
           var t = tipoInfo(gm.type);
           return '<div class="card juego-card"><div class="juego-portada" style="--acc:' + ACC[gm.type] + '">' + (gm.image ? '<img src="' + ZU.esc(gm.image) + '">' : ZGICON(gm.type)) + '</div>' +
@@ -29,11 +44,11 @@
             '<div class="meta">' + ZU.esc(t.name) + (gm.subject ? ' · ' + ZU.esc(gm.subject) : '') + '</div>' +
             '<div class="acc"><a class="btn primary small" href="#/juego/' + gm.id + '">' + ZI('play') + 'Jugar</a></div></div>';
         }).join('') + '</div>' +
-        '<div class="seccion-tit"><h2>¿Cómo funciona?</h2></div>' +
+        '<div class="seccion-tit"><span class="eyebrow">Cómo funciona</span><h2>Tres pasos y a jugar</h2></div>' +
         '<div class="grid cols-3">' +
-        '<div class="card"><h3>1. Creás la actividad</h3><p class="muted">Elegís el tipo de juego, cargás las preguntas o palabras y publicás. También podés partir de una actividad existente.</p></div>' +
-        '<div class="card"><h3>2. Compartís el código</h3><p class="muted">Cada clase tiene un código. Los estudiantes entran con su nombre y juegan desde el celular, la tablet o la compu, también embebido en el aula virtual.</p></div>' +
-        '<div class="card"><h3>3. Ves los informes</h3><p class="muted"> rankings por aciertos, porcentajes, notas estimadas y exportación a planilla, en tiempo real.</p></div>' +
+        '<div class="card paso"><div class="paso-num">1</div><h3>Creás la actividad</h3><p class="muted">Elegís el tipo de juego, cargás las preguntas o palabras y publicás. También podés partir de una actividad existente.</p></div>' +
+        '<div class="card paso"><div class="paso-num">2</div><h3>Compartís el código</h3><p class="muted">Cada clase tiene un código. Los estudiantes entran con su nombre y juegan desde el celular, la tablet o la compu, también embebido en el aula virtual.</p></div>' +
+        '<div class="card paso"><div class="paso-num">3</div><h3>Ves los informes</h3><p class="muted">Rankings por aciertos, porcentajes, notas estimadas y exportación a planilla, en tiempo real.</p></div>' +
         '</div>';
     });
   }

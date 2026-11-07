@@ -1,6 +1,6 @@
-var CACHE = 'zeirojuegos-v1';
+var CACHE = 'zeirojuegos-v2';
 var SHELL = [
-  './', './index.html', './theme.css', './manifest.webmanifest',
+  './', './index.html', './theme.css', './manifest.webmanifest', './assets/logo-mark-v2.png',
   './app/config.js', './app/utils.js', './app/icons.js', './app/voz.js', './app/seed.js',
   './app/db.js', './app/engine.js',
   './app/games/test.js', './app/games/froggy.js', './app/games/sopa.js', './app/games/crucigrama.js',

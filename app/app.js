@@ -5,6 +5,10 @@
   function limpiar() { root.innerHTML = ''; }
 
   function ruta() {
+    var h0 = location.hash || '#/';
+    var navKey = h0.indexOf('docente') !== -1 ? 'docente' : (h0.indexOf('entrar') !== -1 ? 'entrar' : 'home');
+    var nav = document.querySelector('.topbar nav');
+    if (nav) nav.querySelectorAll('a').forEach(function (a) { a.classList.toggle('activa', a.dataset.nav === navKey); });
     var hash = location.hash.replace(/^#/, '');
     var q = ZU.query();
     /* modo embed: siempre directo al juego */

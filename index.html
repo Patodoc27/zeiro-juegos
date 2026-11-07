@@ -3,19 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#4C1D95">
+<meta name="theme-color" content="#6D28D9">
 <title>Zeiro Juegos · Actividades educativas para el aula</title>
 <meta name="description" content="Zeiro Juegos: crea juegos educativos (test, sopa de letras, crucigrama, memoria y más), compartelos con tus estudiantes por código y mira los informes en vivo.">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" type="image/png" href="assets/icon-192.png">
-<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" type="image/png" href="assets/logo-mark-v2.png">
+<link rel="apple-touch-icon" href="assets/logo-mark-v2.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="theme.css">
 </head>
 <body>
+<header class="topbar">
+  <a class="logo" href="#/">
+    <img src="assets/logo-mark-v2.png" alt="Zeiro Juegos">
+    <span>Zeiro Juegos<small>Actividades para el aula</small></span>
+  </a>
+  <nav>
+    <a href="#/" data-nav="home">Inicio</a>
+    <a href="#/docente" data-nav="docente">Docente</a>
+    <a href="#/entrar" data-nav="entrar">Estudiante</a>
+  </nav>
+</header>
 <div id="root"></div>
+<footer class="pie">
+  <span>Zeiro Juegos · Actividades educativas para el aula</span>
+  <span class="pie-mute">Hecho con cariño para las aulas</span>
+</footer>
 <script src="app/vendor/supabase-js.js"></script>
 <script src="app/config.js"></script>
 <script src="app/utils.js"></script>
