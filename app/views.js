@@ -5,6 +5,7 @@
     return { name: type, desc: '' };
   }
   function pct(correct, total) { return total ? Math.round(100 * correct / total) : 0; }
+  var ACC = { test: '#7C3AED', froggy: '#22C55E', sopa: '#0EA5E9', crucigrama: '#F59E0B', columnas: '#EC4899', memory: '#8B5CF6', completar: '#14B8A6', 'ordenar-palabras': '#F97316', 'si-o-no': '#EF4444', 'ordenar-letras': '#6366F1', ruleta: '#EAB308', grupos: '#10B981', filas: '#0EA5E9', mapa: '#84CC16' };
 
   /* ---------------- LANDING ---------------- */
   function landing(root) {
@@ -12,17 +13,18 @@
       var destacados = games.slice(0, 6);
       root.innerHTML =
         '<div class="hero">' +
-        '<svg class="decor" viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="6 8"/><circle cx="100" cy="100" r="60" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/></svg>' +
-        '<h1>Zeiro Juegos</h1>' +
-        '<p>Creamos actividades educativas para el aula: tests, sopas de letras, crucigramas, memoria y mucho más. Los estudiantes juegan con un código, sin registrarse, y vos ves los resultados en vivo.</p>' +
+        '<span class="blob b1"></span><span class="blob b2"></span>' +
+        '<span class="eyebrow" style="color:#5EEAD4">Plataforma de juegos para el aula</span>' +
+        '<h1>Jugá, creá y <em>compartí</em> actividades educativas.</h1>' +
+        '<p>Tests, sopas de letras, crucigramas, memoria y 10 juegos más. Los estudiantes entran con un código, sin registrarse, y vos ves los resultados en vivo.</p>' +
         '<div class="acciones">' +
         '<a class="btn blanco" href="#/docente">' + ZI('edit') + 'Soy docente</a>' +
-        '<a class="btn" style="background:rgba(255,255,255,.15);color:#fff" href="#/entrar">' + ZI('play') + 'Soy estudiante</a>' +
-        '</div></div>' +
+        '<a class="btn fantasma" href="#/entrar">' + ZI('play') + 'Soy estudiante</a>' +
+        '</div><div class="marca-hero">Zeiro Juegos</div></div>' +
         '<div class="seccion-tit"><h2>Actividades destacadas</h2><span class="badge">' + games.length + ' juegos</span></div>' +
         '<div class="grid cols-3">' + destacados.map(function (gm) {
           var t = tipoInfo(gm.type);
-          return '<div class="card juego-card"><div class="juego-portada">' + (gm.image ? '<img src="' + ZU.esc(gm.image) + '">' : ZGICON(gm.type)) + '</div>' +
+          return '<div class="card juego-card"><div class="juego-portada" style="--acc:' + ACC[gm.type] + '">' + (gm.image ? '<img src="' + ZU.esc(gm.image) + '">' : ZGICON(gm.type)) + '</div>' +
             '<h3>' + ZU.esc(gm.title) + '</h3>' +
             '<div class="meta">' + ZU.esc(t.name) + (gm.subject ? ' · ' + ZU.esc(gm.subject) : '') + '</div>' +
             '<div class="acc"><a class="btn primary small" href="#/juego/' + gm.id + '">' + ZI('play') + 'Jugar</a></div></div>';
@@ -64,7 +66,7 @@
           '<div id="lobbynombre"></div>' +
           '<div class="seccion-tit" style="margin-top:20px"><h2>Actividades</h2></div>' +
           '<div class="grid cols-3">' + (games.length ? games.map(function (gm) {
-            return '<div class="card juego-card"><div class="juego-portada">' + (gm.image ? '<img src="' + ZU.esc(gm.image) + '">' : ZGICON(gm.type)) + '</div>' +
+            return '<div class="card juego-card"><div class="juego-portada" style="--acc:' + ACC[gm.type] + '">' + (gm.image ? '<img src="' + ZU.esc(gm.image) + '">' : ZGICON(gm.type)) + '</div>' +
               '<h3>' + ZU.esc(gm.title) + '</h3><div class="meta">' + ZU.esc(tipoInfo(gm.type).name) + '</div>' +
               '<div class="acc"><a class="btn primary small" href="#/jugar?juego=' + gm.id + '&clase=' + cls.code + '">' + ZI('play') + 'Jugar</a></div></div>';
           }).join('') : '<div class="vacio">Todavía no hay actividades en esta clase. Pedile a tu docente que comparta alguna.</div>') + '</div>';
@@ -225,7 +227,7 @@
           '<a class="btn ghost" href="#/docente/informes">' + ZI('search') + 'Informes</a></div></div>' +
           (games.length ? '<div class="grid cols-3">' + games.map(function (gm) {
             var ti = tipoInfo(gm.type);
-            return '<div class="card juego-card"><div class="juego-portada">' + (gm.image ? '<img src="' + ZU.esc(gm.image) + '">' : ZGICON(gm.type)) + '</div>' +
+            return '<div class="card juego-card"><div class="juego-portada" style="--acc:' + ACC[gm.type] + '">' + (gm.image ? '<img src="' + ZU.esc(gm.image) + '">' : ZGICON(gm.type)) + '</div>' +
               '<h3>' + ZU.esc(gm.title) + '</h3><div class="meta">' + ZU.esc(ti.name) + (gm.subject ? ' · ' + ZU.esc(gm.subject) : '') + '</div>' +
               '<div class="juego-admin"><div class="acciones">' +
               '<a class="btn small primary" href="#/docente/juego/' + gm.id + '">' + ZI('edit') + 'Editar</a>' +

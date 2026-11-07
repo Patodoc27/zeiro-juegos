@@ -1,6 +1,6 @@
 # Zeiro Juegos
 
-Plataforma de actividades educativas para el aula, al estilo Educaplay pero con identidad propia: los docentes crean juegos, los estudiantes juegan con un código de clase (sin registro) y los resultados se ven en informes en vivo.
+Plataforma original de actividades educativas para el aula: los docentes crean juegos, los estudiantes juegan con un código de clase (sin registro) y los resultados se ven en informes en vivo.
 
 ## Publicación
 
